@@ -12,6 +12,12 @@ public abstract class Entity : TicksHandler
     [SerializeField] private ReactiveVar<Reservation> _reservation;
     public IReadOnlyReactiveVariable<Reservation> Reservation => _reservation;
 
+    [SerializeField] private ReactiveVar<int> _hp;
+    public IReadOnlyReactiveVariable<int> HP => _hp;
+
+    public Action<Damage> OnTakeDamage;
+    public Action AwakeDestroy;
+
     public virtual int Quantity
     {
         get => 1;
@@ -30,10 +36,22 @@ public abstract class Entity : TicksHandler
         Ticker.Singleton.PushIn(this);
     }
 
+    protected virtual void OnEnable() { }
+    protected virtual void OnDisable() { }
+
+    public virtual void TakeDamage(Damage dmg)
+    {
+        _hp.ReactValue -= dmg.Value;
+        OnTakeDamage?.Invoke(dmg);
+
+        if (_hp.ReactValue <= 0)
+            Destroy(this.gameObject);
+    }
+
     public virtual void SetPosition(Vector3 position) => transform.position = position;
     public virtual void SetRotation(Vector3 rotation) => transform.eulerAngles = rotation;
 
-    public virtual void MakeResrve(Entity entity)
+    public virtual void MakeReserve(Entity entity)
     {
         if (_reservation.ReactValue != null)
             ReleaseReservation();
@@ -69,6 +87,7 @@ public abstract class Entity : TicksHandler
 
     protected virtual void OnDestroy()
     {
+        AwakeDestroy?.Invoke();
         Map.Singleton.OnEntityDestroy(this);
         Ticker.Singleton.PushOut(this);
     }

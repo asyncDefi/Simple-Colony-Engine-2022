@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using SimpleReactive;
 using UnityEngine;
 
@@ -29,6 +26,17 @@ public abstract class EntityWithComponents : Entity
         comp.OnRemove();
         _components.Remove(comp);
         Destroy(comp);
+    }
+
+    protected override void OnEnable()
+    {
+        foreach (var comp in _components.List)
+            comp.OnParentEnable();
+    }
+    protected override void OnDisable()
+    {
+        foreach (var comp in _components.List)
+            comp.OnParentDisable();
     }
 
     public override void UpdateTick()

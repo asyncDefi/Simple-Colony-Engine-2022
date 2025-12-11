@@ -33,6 +33,9 @@ public abstract class EntityComponent : MonoBehaviour
         UID = Guid.NewGuid().ToString();
     }
 
+    public virtual void OnParentEnable() { }
+    public virtual void OnParentDisable() { }
+
     public virtual void UpdateTick() { }
     public virtual void FixedTick() { }
     public virtual void LateTick() { }
