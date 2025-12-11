@@ -7,17 +7,19 @@ using UnityEngine;
 
 public sealed class Game : SingletonMonoBehaviour<Game>
 {
-    [field: SerializeField] public ReactiveVar<string> SessionKey = new("Test");
-    [field: SerializeField] public ReactiveVar<GameState> State { get; private set; } = new(GameState.Running);
+    [field: SerializeField] private ReactiveVar<string> _sessionKey = new("Test");
+    public IReadOnlyReactiveVariable<string> SessionKey => _sessionKey;
 
+    [field: SerializeField] private ReactiveVar<GameState> _state = new(GameState.Running);
+    public IReadOnlyReactiveVariable<GameState> State => _state;
 
     [Button]
     public void Save()
     {
-        State.ReactValue = GameState.Saving;
+        _state.ReactValue = GameState.Saving;
 
-        object sd = new GameSD(SessionKey);
-        string path = Path.Combine(Application.persistentDataPath, $"{SessionKey}.sd");
+        object sd = new GameSD(_sessionKey);
+        string path = Path.Combine(Application.persistentDataPath, $"{_sessionKey}.sd");
 
         using (FileStream fs = new FileStream(path, FileMode.Create))
         {
@@ -25,14 +27,14 @@ public sealed class Game : SingletonMonoBehaviour<Game>
             bf.Serialize(fs, sd);
         }
 
-        State.ReactValue = GameState.Running;
+        _state.ReactValue = GameState.Running;
         Debug.Log($"Game saved successfully to: {path}");
     }
 
     [Button]
     public void Load()
     {
-        string path = Path.Combine(Application.persistentDataPath, $"{SessionKey}.sd");
+        string path = Path.Combine(Application.persistentDataPath, $"{_sessionKey}.sd");
         using (FileStream fs = new FileStream(path, FileMode.Open))
         {
             BinaryFormatter bf = new BinaryFormatter();
@@ -42,7 +44,7 @@ public sealed class Game : SingletonMonoBehaviour<Game>
     }
     public void Load(GameSD sd)
     {
-        State.ReactValue = GameState.Loading;
+        _state.ReactValue = GameState.Loading;
 
         Clear();
 
@@ -50,7 +52,7 @@ public sealed class Game : SingletonMonoBehaviour<Game>
         Map.Singleton.RefreshReferences(sd.MapSD);
         Map.Singleton.PostRefreshReferences(sd.MapSD);
 
-        State.ReactValue = GameState.Running;
+        _state.ReactValue = GameState.Running;
     }
     public void Clear()
     {

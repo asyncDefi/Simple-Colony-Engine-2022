@@ -25,7 +25,7 @@ public sealed class Ticker : SingletonMonoBehaviour<Ticker>
 
     private void Update()
     {
-        if (Game.Singleton.State.ReactValue != GameState.Running) return;
+        if (Game.Singleton.State.ReadOnlyValue != GameState.Running) return;
 
         _handlers.RemoveAll(h => h == null);
 
@@ -34,14 +34,14 @@ public sealed class Ticker : SingletonMonoBehaviour<Ticker>
     }
     private void FixedUpdate()
     {
-        if (Game.Singleton.State.ReactValue != GameState.Running) return;
+        if (Game.Singleton.State.ReadOnlyValue != GameState.Running) return;
 
         foreach (var handler in _handlers)
             handler?.FixedTick();
     }
     private void LateUpdate()
     {
-        if (Game.Singleton.State.ReactValue != GameState.Running) return;
+        if (Game.Singleton.State.ReadOnlyValue != GameState.Running) return;
 
         foreach (var handler in _handlers)
             handler?.LateTick();
