@@ -57,6 +57,14 @@ public sealed class Map : SingletonMonoBehaviour<Map>
         }
     }
 
+    public void Clear()
+    {
+        foreach (var entity in _entities.List)
+            Destroy(entity.gameObject);
+
+        _entities.Clear();
+    }
+
     public T Find<T>(string UID, string prefabUID = null) where T : Entity
     {
         var result = (prefabUID != null)
@@ -71,11 +79,58 @@ public sealed class Map : SingletonMonoBehaviour<Map>
             return null;
     }
 
+    public void Load(MapSD sd)
+    {
+        EntityPrefab GetPrefab(string key)
+        {
+            return null;
+        }
+
+        foreach (var entity in sd.Entities)
+        {
+            var prefab = GetPrefab(entity.PrefabUID);
+            if (prefab != null)
+            {
+                var instance = Spawn<Entity>(prefab, false);
+                instance.Load(entity);
+            }
+        }
+    }
+    public void RefreshReferences(MapSD sd)
+    {
+        foreach (var entity in sd.Entities)
+        {
+            var instance = Find<Entity>(entity.UID, entity.PrefabUID);
+            instance?.RefreshReferences(entity);
+        }
+    }
+    public void PostRefreshReferences(MapSD sd)
+    {
+        foreach (var entity in sd.Entities)
+        {
+            var instance = Find<Entity>(entity.UID, entity.PrefabUID);
+            instance?.PostRefreshReferences(entity);
+        }
+    }
+
     private void OnValidate()
     {
         var childrens = this.GetComponentsInChildren<Entity>();
         foreach (var children in childrens)
             if (!_entities.Contains(children))
                 _entities.Add(children);
+    }
+}
+
+[System.Serializable]
+public sealed class MapSD
+{
+    public List<EntitySD> Entities;
+
+    public MapSD()
+    {
+        Entities = new();
+        foreach (var entity in Map.Singleton.Entities.ReadonlyList)
+            Entities.Add(entity.SD);
     }
 }

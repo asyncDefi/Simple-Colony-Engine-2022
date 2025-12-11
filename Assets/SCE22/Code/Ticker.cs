@@ -18,8 +18,15 @@ public sealed class Ticker : SingletonMonoBehaviour<Ticker>
             _handlers.Remove(handler);
     }
 
+    public void Clear()
+    {
+        _handlers.Clear();
+    }
+
     private void Update()
     {
+        if (Game.Singleton.State.ReactValue != GameState.Running) return;
+
         _handlers.RemoveAll(h => h == null);
 
         foreach (var handler in _handlers)
@@ -27,11 +34,15 @@ public sealed class Ticker : SingletonMonoBehaviour<Ticker>
     }
     private void FixedUpdate()
     {
+        if (Game.Singleton.State.ReactValue != GameState.Running) return;
+
         foreach (var handler in _handlers)
             handler?.FixedTick();
     }
     private void LateUpdate()
     {
+        if (Game.Singleton.State.ReactValue != GameState.Running) return;
+
         foreach (var handler in _handlers)
             handler?.LateTick();
     }

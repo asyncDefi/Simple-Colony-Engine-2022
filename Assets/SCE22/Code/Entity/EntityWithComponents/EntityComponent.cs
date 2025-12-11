@@ -42,6 +42,7 @@ public abstract class EntityComponent : MonoBehaviour
     public virtual void Load(EntityComponentSD sd)
     {
         UID = sd.UID;
+        AddedAtRuntimeFlag = sd.AddedAtRuntimeFlag;
     }
     public virtual void RefreshReferences(EntityComponentSD sd) { }
     public virtual void PostRefreshReferences(EntityComponentSD sd) { }
