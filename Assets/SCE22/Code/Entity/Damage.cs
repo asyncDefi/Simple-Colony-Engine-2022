@@ -7,4 +7,10 @@ public sealed class Damage
 {
     public int Value;
     public Entity Author;
+
+    public Damage(int value, Entity author)
+    {
+        Value = value;
+        Author = author;
+    }
 }
