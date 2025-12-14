@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class MainCamera : SingletonMonoBehaviour<MainCamera>
@@ -23,6 +24,10 @@ public class MainCamera : SingletonMonoBehaviour<MainCamera>
 
     public bool Frezed;
 
+#if UNITY_EDITOR
+    private List<Vector3> _editorHits = new();
+#endif
+
     private void Awake()
     {
         _targetZoom = transform.position.y;
@@ -43,6 +48,9 @@ public class MainCamera : SingletonMonoBehaviour<MainCamera>
         HandleMovement();
         HandleZoom();
         HandleMousePan(); // Call the new mouse pan method
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+            TryHitGround();
 
         // Smoothly move the camera to the target position
         transform.position = Vector3.Lerp(transform.position, _targetPosition, Time.fixedDeltaTime * moveSpeed);
@@ -135,7 +143,15 @@ public class MainCamera : SingletonMonoBehaviour<MainCamera>
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, LayerMask.GetMask("Ground")))
         {
+            var commandsRunner = FindFirstObjectByType<Colonist>().GetComponent<ColonistCommandsRunner>();
+            commandsRunner.AddCommand(new ColonistCommands.ColonistCommand_GoToCords(commandsRunner, hitInfo.point));
+            Debug.Log($"Go To {hitInfo.point}");
+            _editorHits.Add(hitInfo.point);
             return hitInfo.point;
+        }
+        else
+        {
+            Debug.Log("Miss");
         }
 
 
@@ -170,5 +186,9 @@ public class MainCamera : SingletonMonoBehaviour<MainCamera>
         Gizmos.color = Color.yellow;
         Vector3 maxZoomCenter = new Vector3(center.x, maxZoom, center.z);
         Gizmos.DrawWireCube(maxZoomCenter, planeSize);
+
+        Gizmos.color = Color.red;
+        foreach (var hit in _editorHits)
+            Gizmos.DrawCube(hit, new Vector3(1, 1, 1));
     }
 }

@@ -9,7 +9,7 @@ public abstract class Entity : TicksHandler
     [field: SerializeField] public EntityPrefab Prefab { get; private set; }
     [field: SerializeField] public string UID { get; private set; } = "-1";
 
-    [SerializeField] private ReactiveVar<Reservation> _reservation;
+    [SerializeField] private ReactiveVar<Reservation> _reservation = new(null);
     public IReadOnlyReactiveVariable<Reservation> Reservation => _reservation;
 
     [SerializeField] private ReactiveVar<int> _hp;
@@ -88,7 +88,7 @@ public abstract class Entity : TicksHandler
     protected virtual void OnDestroy()
     {
         AwakeDestroy?.Invoke();
-        Map.Singleton.OnEntityDestroy(this);
-        Ticker.Singleton.PushOut(this);
+        Map.Singleton?.OnEntityDestroy(this);
+        Ticker.Singleton?.PushOut(this);
     }
 }
