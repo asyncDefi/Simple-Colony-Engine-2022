@@ -3,7 +3,7 @@
 namespace SType
 {
     [System.Serializable]
-    public struct Vector2
+    public class Vector2
     {
         public float x;
         public float y;
@@ -25,7 +25,7 @@ namespace SType
     }
 
     [System.Serializable]
-    public struct Vector3
+    public class Vector3
     {
         public float x;
         public float y;

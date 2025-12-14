@@ -38,6 +38,9 @@ public abstract class Entity : TicksHandler
 
     protected virtual void OnEnable()
     {
+        if (UID == "none")
+            UID = Guid.NewGuid().ToString();
+
         GameTime.Singleton.TimeMultiplier.EmptyInfoChanged += OnTimeMultiplayerChanged;
     }
     protected virtual void OnDisable()

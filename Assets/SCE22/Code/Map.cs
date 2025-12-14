@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using SimpleReactive;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 public sealed class Map : SingletonMonoBehaviour<Map>
@@ -17,13 +18,16 @@ public sealed class Map : SingletonMonoBehaviour<Map>
         if (prefab == null) return null;
         if (prefab.Value is not T) return null;
 
-        position ??= Vector3.zero;
-        rotation ??= Vector3.zero;
+        //position ??= Vector3.zero;
+        //rotation ??= Vector3.zero;
 
         var instance = Instantiate(prefab.Value, this.transform);
 
-        instance.SetPosition(position.Value);
-        instance.SetRotation(rotation.Value);
+
+        if (position != null)
+            instance.SetPosition(position.Value);
+        if (rotation != null)
+            instance.SetRotation(rotation.Value);
 
         if (isFirstSpawn)
             instance.OnFirstSpawn();
@@ -119,6 +123,9 @@ public sealed class Map : SingletonMonoBehaviour<Map>
         foreach (var children in childrens)
             if (!_entities.Contains(children))
                 _entities.Add(children);
+
+        if (transform.position != Vector3.zero)
+            transform.position = Vector3.zero;
     }
 }
 

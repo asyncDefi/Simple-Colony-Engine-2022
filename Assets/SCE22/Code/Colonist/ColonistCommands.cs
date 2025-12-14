@@ -58,8 +58,7 @@ namespace ColonistCommands
             base.PostRefreshReferences(sd);
             if (State == CommandState.InProgress)
             {
-                var agent = this.EntityRef.GetComponent<NavMeshAgent>();
-                agent.SetDestination(Cords);
+                _agent.SetDestination(Cords);
             }
         }
 

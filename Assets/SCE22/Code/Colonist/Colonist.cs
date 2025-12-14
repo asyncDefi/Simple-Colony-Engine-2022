@@ -27,10 +27,20 @@ public class Colonist : EntityWithComponents
         }
     }
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        NavAgent.speed = RealSpeed;
+    }
+
+    public override void SetPosition(Vector3 position)
+    {
+        NavAgent.Warp(position);
+    }
+
     protected override void OnTimeMultiplayerChanged()
     {
         base.OnTimeMultiplayerChanged();
         NavAgent.speed = RealSpeed;
-        Debug.Log("TIME CHANGED");
     }
 }

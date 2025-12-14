@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using SimpleReactive;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 public sealed class Game : SingletonMonoBehaviour<Game>
@@ -35,24 +36,39 @@ public sealed class Game : SingletonMonoBehaviour<Game>
     public void Load()
     {
         string path = Path.Combine(Application.persistentDataPath, $"{_sessionKey}.sd");
+
         using (FileStream fs = new FileStream(path, FileMode.Open))
         {
             BinaryFormatter bf = new BinaryFormatter();
             GameSD obj = bf.Deserialize(fs) as GameSD;
-            Load(obj as GameSD);
+            StartCoroutine(LoadRoutine(obj as GameSD));
         }
     }
-    public void Load(GameSD sd)
+    private IEnumerator LoadRoutine(GameSD sd)
     {
         _state.Value = GameState.Loading;
 
         Clear();
 
+        yield return null;
+
+        var navMeshSurfaces = FindFirstObjectByType<NavMeshSurface>();
+        if (navMeshSurfaces != null)
+        {
+
+            navMeshSurfaces.RemoveData();
+            navMeshSurfaces.BuildNavMesh();
+        }
+
         Map.Singleton.Load(sd.MapSD);
+
+        yield return null;
+
         Map.Singleton.RefreshReferences(sd.MapSD);
+
         Map.Singleton.PostRefreshReferences(sd.MapSD);
 
-        _state.Value = GameState.Running;
+        Debug.Log("Game loaded successfully via Coroutine.");
     }
     public void Clear()
     {

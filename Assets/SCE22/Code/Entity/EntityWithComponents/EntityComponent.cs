@@ -6,7 +6,6 @@ using UnityEngine;
 
 public abstract class EntityComponent : MonoBehaviour
 {
-
     [field: SerializeField] public string UID { get; private set; } = "none";
     [field: SerializeField] public string LocalUID { get; private set; } = "none";
 
@@ -33,7 +32,11 @@ public abstract class EntityComponent : MonoBehaviour
         UID = Guid.NewGuid().ToString();
     }
 
-    public virtual void OnParentEnable() { }
+    public virtual void OnParentEnable()
+    {
+        if (UID == "none")
+            UID = Guid.NewGuid().ToString();
+    }
     public virtual void OnParentDisable() { }
 
     public virtual void UpdateTick() { }
