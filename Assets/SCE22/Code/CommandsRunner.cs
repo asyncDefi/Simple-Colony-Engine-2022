@@ -12,16 +12,16 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
     public IReadOnlyCollection<TCommand> Commands => _commands;
 
     [SerializeField] private ReactiveVar<int> _mov = new(-1);
-    public IReadOnlyReactiveVariable<int> Mov => _mov;
+    public IReadOnlyReactiveVar<int> Mov => _mov;
 
     public TCommand CurrentCommand
     {
         get
         {
-            if (_mov.ReactValue < 0) return null;
-            if (_mov.ReactValue >= _commands.Count) return null;
+            if (_mov.Value < 0) return null;
+            if (_mov.Value >= _commands.Count) return null;
 
-            return _commands[_mov.ReactValue];
+            return _commands[_mov.Value];
         }
     }
 
@@ -33,7 +33,7 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
 
         CommandsRunnerSD<TEntity, TCommand> selfSD = sd as CommandsRunnerSD<TEntity, TCommand>;
         Debug.Log($"[CommandsRunner] Loading with Mov={selfSD.Mov}, Commands count={selfSD.Commands.Count}");
-        _mov.ReactValue = selfSD.Mov;
+        _mov.Value = selfSD.Mov;
         foreach (var commandSD in selfSD.Commands)
         {
             try
@@ -81,15 +81,15 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
         Debug.Log($"[CommandsRunner] AddCommand: {command.GetType().Name}, UID={command.UID}");
         _commands.Add(command);
         if (Mov.ReadOnlyValue < 0)
-            _mov.ReactValue = 0;
+            _mov.Value = 0;
 
     }
     public virtual void AddCommands(ICollection<TCommand> commands)
     {
         Debug.Log($"[CommandsRunner] AddCommands: {commands.Count} commands");
         _commands.AddRange(commands);
-        if (_mov.ReactValue < 0)
-            _mov.ReactValue = 0;
+        if (_mov.Value < 0)
+            _mov.Value = 0;
     }
 
     public override void UpdateTick()
@@ -98,13 +98,13 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
         {
             if (CurrentCommand.IsDone)
             {
-                Debug.Log($"[CommandsRunner] Command done: {CurrentCommand.GetType().Name}, State={CurrentCommand.State}, Moving to next (Mov: {_mov.ReactValue} -> {_mov.ReactValue + 1})");
-                _mov.ReactValue++;
+                Debug.Log($"[CommandsRunner] Command done: {CurrentCommand.GetType().Name}, State={CurrentCommand.State}, Moving to next (Mov: {_mov.Value} -> {_mov.Value + 1})");
+                _mov.Value++;
                 if (CurrentCommand == null)
                 {
                     Debug.Log($"[CommandsRunner] All commands completed, clearing queue");
                     _commands.Clear();
-                    _mov.ReactValue = -1;
+                    _mov.Value = -1;
 
                     return;
                 }
@@ -124,9 +124,6 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
 
             CurrentCommand.UpdateTick();
         }
-        else
-            Debug.Log($"Current Command is Null ({_commands.Count()})");
-
     }
     public override void FixedTick()
     {
@@ -151,7 +148,7 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
         Debug.Log($"[CommandsRunner] Clearing all commands (Count: {_commands.Count})");
         CurrentCommand?.Cancel();
         _commands.Clear();
-        _mov.ReactValue = -1;
+        _mov.Value = -1;
     }
 }
 

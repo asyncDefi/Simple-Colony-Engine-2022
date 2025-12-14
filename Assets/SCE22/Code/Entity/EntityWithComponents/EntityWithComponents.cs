@@ -30,11 +30,13 @@ public abstract class EntityWithComponents : Entity
 
     protected override void OnEnable()
     {
+        base.OnEnable();
         foreach (var comp in _components.List)
             comp.OnParentEnable();
     }
     protected override void OnDisable()
     {
+        base.OnDisable();
         foreach (var comp in _components.List)
             comp.OnParentDisable();
     }

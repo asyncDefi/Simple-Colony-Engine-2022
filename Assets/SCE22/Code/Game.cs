@@ -8,15 +8,15 @@ using UnityEngine;
 public sealed class Game : SingletonMonoBehaviour<Game>
 {
     [field: SerializeField] private ReactiveVar<string> _sessionKey = new("Test");
-    public IReadOnlyReactiveVariable<string> SessionKey => _sessionKey;
+    public IReadOnlyReactiveVar<string> SessionKey => _sessionKey;
 
     [field: SerializeField] private ReactiveVar<GameState> _state = new(GameState.Running);
-    public IReadOnlyReactiveVariable<GameState> State => _state;
+    public IReadOnlyReactiveVar<GameState> State => _state;
 
     [Button]
     public void Save()
     {
-        _state.ReactValue = GameState.Saving;
+        _state.Value = GameState.Saving;
 
         object sd = new GameSD(_sessionKey);
         string path = Path.Combine(Application.persistentDataPath, $"{_sessionKey}.sd");
@@ -27,7 +27,7 @@ public sealed class Game : SingletonMonoBehaviour<Game>
             bf.Serialize(fs, sd);
         }
 
-        _state.ReactValue = GameState.Running;
+        _state.Value = GameState.Running;
         Debug.Log($"Game saved successfully to: {path}");
     }
 
@@ -44,7 +44,7 @@ public sealed class Game : SingletonMonoBehaviour<Game>
     }
     public void Load(GameSD sd)
     {
-        _state.ReactValue = GameState.Loading;
+        _state.Value = GameState.Loading;
 
         Clear();
 
@@ -52,7 +52,7 @@ public sealed class Game : SingletonMonoBehaviour<Game>
         Map.Singleton.RefreshReferences(sd.MapSD);
         Map.Singleton.PostRefreshReferences(sd.MapSD);
 
-        _state.ReactValue = GameState.Running;
+        _state.Value = GameState.Running;
     }
     public void Clear()
     {

@@ -10,10 +10,10 @@ public abstract class Entity : TicksHandler
     [field: SerializeField] public string UID { get; private set; } = "-1";
 
     [SerializeField] private ReactiveVar<Reservation> _reservation = new(null);
-    public IReadOnlyReactiveVariable<Reservation> Reservation => _reservation;
+    public IReadOnlyReactiveVar<Reservation> Reservation => _reservation;
 
     [SerializeField] private ReactiveVar<int> _hp;
-    public IReadOnlyReactiveVariable<int> HP => _hp;
+    public IReadOnlyReactiveVar<int> HP => _hp;
 
     public Action<Damage> OnTakeDamage;
     public Action AwakeDestroy;
@@ -36,34 +36,43 @@ public abstract class Entity : TicksHandler
         Ticker.Singleton.PushIn(this);
     }
 
-    protected virtual void OnEnable() { }
-    protected virtual void OnDisable() { }
+    protected virtual void OnEnable()
+    {
+        GameTime.Singleton.TimeMultiplier.EmptyInfoChanged += OnTimeMultiplayerChanged;
+    }
+    protected virtual void OnDisable()
+    {
+        if (GameTime.Singleton != null)
+            GameTime.Singleton.TimeMultiplier.EmptyInfoChanged -= OnTimeMultiplayerChanged;
+    }
 
     public virtual void TakeDamage(Damage dmg)
     {
-        _hp.ReactValue -= dmg.Value;
+        _hp.Value -= dmg.Value;
         OnTakeDamage?.Invoke(dmg);
 
-        if (_hp.ReactValue <= 0)
+        if (_hp.Value <= 0)
             Destroy(this.gameObject);
     }
 
     public virtual void SetPosition(Vector3 position) => transform.position = position;
     public virtual void SetRotation(Vector3 rotation) => transform.eulerAngles = rotation;
 
+    protected virtual void OnTimeMultiplayerChanged() { }
+
     public virtual void MakeReserve(Entity entity)
     {
-        if (_reservation.ReactValue != null)
+        if (_reservation.Value != null)
             ReleaseReservation();
 
-        _reservation.ReactValue = new(entity);
+        _reservation.Value = new(entity);
     }
     public virtual void ReleaseReservation()
     {
-        if (_reservation.ReactValue == null)
+        if (_reservation.Value == null)
             return;
 
-        _reservation.ReactValue = null;
+        _reservation.Value = null;
     }
 
     public virtual EntitySD SD => new(this);
@@ -78,7 +87,7 @@ public abstract class Entity : TicksHandler
     public virtual void RefreshReferences(EntitySD sd)
     {
         if (sd.Reservation != null)
-            _reservation.ReactValue = new(sd.Reservation);
+            _reservation.Value = new(sd.Reservation);
     }
     public virtual void PostRefreshReferences(EntitySD sd)
     {
@@ -90,5 +99,8 @@ public abstract class Entity : TicksHandler
         AwakeDestroy?.Invoke();
         Map.Singleton?.OnEntityDestroy(this);
         Ticker.Singleton?.PushOut(this);
+
+        if (GameTime.Singleton != null)
+            GameTime.Singleton.TimeMultiplier.EmptyInfoChanged -= OnTimeMultiplayerChanged;
     }
 }

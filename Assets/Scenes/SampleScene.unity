@@ -201,6 +201,7 @@ MonoBehaviour:
   _rewriteGameObjectNameWithSingletonTypeName: 1
   _handlers:
   - {fileID: 1244273051}
+  - {fileID: 2045933608}
 --- !u!4 &86515559
 Transform:
   m_ObjectHideFlags: 0
@@ -647,6 +648,7 @@ Transform:
   m_Children:
   - {fileID: 86515559}
   - {fileID: 12618394}
+  - {fileID: 2045933607}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1244273051 stripped
@@ -875,6 +877,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 799353902}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2045933606
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2045933607}
+  - component: {fileID: 2045933608}
+  m_Layer: 0
+  m_Name: GameTime
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2045933607
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045933606}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1185979342}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2045933608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045933606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e94d0d1cc37100946a485502ce35511e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rewriteGameObjectNameWithSingletonTypeName: 1
+  MinutesPerHour: 30
+  HoursPerDay: 12
+  DaysPerMonth: 12
+  MonthsPerYear: 6
+  _realSecondsPerGameMinute: 1
+  _timeMultiplier: 1
+  _isPaused: 0
+  _minute:
+    _value: 0
+  _hour:
+    _value: 0
+  _day:
+    _value: 1
+  _month:
+    _value: 1
+  _year:
+    _value: 1
 --- !u!1 &2046309105
 GameObject:
   m_ObjectHideFlags: 0

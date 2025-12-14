@@ -19,7 +19,7 @@ namespace SimpleReactive
     /// <typeparam name="T">The type of the stored reactive value.</typeparam>
 
     [System.Serializable]
-    public class ReactiveVar<T> : IDisposable, IReadOnlyReactiveVariable<T>
+    public class ReactiveVar<T> : IDisposable, IReadOnlyReactiveVar<T>
     {
         [SerializeField] private T _value;
         [NonSerialized] private readonly IEqualityComparer<T> _comparer;
@@ -36,30 +36,30 @@ namespace SimpleReactive
             _comparer = comparer ?? EqualityComparer<T>.Default;
         }
 
-        event Action<T, T> IReadOnlyReactiveVariable<T>.BeforeChange
+        event Action<T, T> IReadOnlyReactiveVar<T>.BeforeChange
         {
             add => BeforeChange += value;
             remove => BeforeChange -= value;
         }
 
-        event Action<T, T> IReadOnlyReactiveVariable<T>.Changed
+        event Action<T, T> IReadOnlyReactiveVar<T>.Changed
         {
             add => Changed += value;
             remove => Changed -= value;
         }
 
-        event Action<T, T> IReadOnlyReactiveVariable<T>.AfterChange
+        event Action<T, T> IReadOnlyReactiveVar<T>.AfterChange
         {
             add => AfterChange += value;
             remove => AfterChange -= value;
         }
 
-        event Action IReadOnlyReactiveVariable<T>.EmptyInfoChanged
+        event Action IReadOnlyReactiveVar<T>.EmptyInfoChanged
         {
             add => EmptyInfoChanged += value;
             remove => EmptyInfoChanged -= value;
         }
-        public T ReactValue
+        public T Value
         {
             get => _value;
             set
@@ -207,7 +207,7 @@ namespace SimpleReactive
 
 }
 
-public interface IReadOnlyReactiveVariable<T>
+public interface IReadOnlyReactiveVar<T>
 {
     event System.Action<T, T> BeforeChange;
     event System.Action<T, T> Changed;
