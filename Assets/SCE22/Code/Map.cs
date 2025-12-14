@@ -83,7 +83,7 @@ public sealed class Map : SingletonMonoBehaviour<Map>
     {
         EntityPrefab GetPrefab(string key)
         {
-            return null;
+            return PrefabsStorage.Singleton.Prefabs.FirstOrDefault(prefab => prefab.UID == key);
         }
 
         foreach (var entity in sd.Entities)

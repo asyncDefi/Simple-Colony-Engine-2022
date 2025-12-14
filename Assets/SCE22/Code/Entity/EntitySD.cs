@@ -15,7 +15,7 @@ public class EntitySD
     public EntitySD() { }
     public EntitySD(Entity entity)
     {
-        PrefabUID = entity.Prefab.UID;
+        PrefabUID = (entity.Prefab != null) ? entity.Prefab.UID : "404-error";
         UID = entity.UID;
 
         Position = entity.RealPosition;
