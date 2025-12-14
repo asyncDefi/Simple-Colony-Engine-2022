@@ -138,22 +138,25 @@ public class MainCamera : SingletonMonoBehaviour<MainCamera>
 
     public Vector3? TryHitGround()
     {
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hitInfo;
+
         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, LayerMask.GetMask("Ground")))
         {
-            var commandsRunner = FindFirstObjectByType<Colonist>().GetComponent<ColonistCommandsRunner>();
-            commandsRunner.AddCommand(new ColonistCommands.ColonistCommand_GoToCords(commandsRunner, hitInfo.point));
-            Debug.Log($"Go To {hitInfo.point}");
-            _editorHits.Add(hitInfo.point);
-            return hitInfo.point;
-        }
-        else
-        {
-            Debug.Log("Miss");
-        }
+            var colonist = FindFirstObjectByType<Colonist>();
 
+            var commandsRunner = colonist.GetComponent<ColonistCommandsRunner>();
+
+            if (commandsRunner != null)
+            {
+                commandsRunner.AddCommand(new ColonistCommands.ColonistCommand_GoToCords(commandsRunner, hitInfo.point));
+
+                Debug.DrawLine(Camera.main.transform.position, hitInfo.point, Color.green, 1f);
+                _editorHits.Add(hitInfo.point);
+                return hitInfo.point;
+            }
+        }
 
         return null;
     }

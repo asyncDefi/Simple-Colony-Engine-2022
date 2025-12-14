@@ -26,7 +26,6 @@ public sealed class Ticker : SingletonMonoBehaviour<Ticker>
     private void Update()
     {
         if (Game.Singleton.State.ReadOnlyValue != GameState.Running) return;
-
         _handlers.RemoveAll(h => h == null);
 
         foreach (var handler in _handlers)

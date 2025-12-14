@@ -25,18 +25,22 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
         }
     }
 
-    public abstract CommandsRunnerSD<TEntity, TCommand> SD { get; }
+    public override EntityComponentSD SD => new CommandsRunnerSD<TEntity, TCommand>(this);
 
-    public virtual void Load(CommandsRunnerSD<TEntity, TCommand> sd)
+    public override void Load(EntityComponentSD sd)
     {
-        Debug.Log($"[CommandsRunner] Loading with Mov={sd.Mov}, Commands count={sd.Commands.Count}");
-        _mov.ReactValue = sd.Mov;
-        foreach (var commandSD in sd.Commands)
+        base.Load(sd);
+
+        CommandsRunnerSD<TEntity, TCommand> selfSD = sd as CommandsRunnerSD<TEntity, TCommand>;
+        Debug.Log($"[CommandsRunner] Loading with Mov={selfSD.Mov}, Commands count={selfSD.Commands.Count}");
+        _mov.ReactValue = selfSD.Mov;
+        foreach (var commandSD in selfSD.Commands)
         {
             try
             {
                 var instance = Activator.CreateInstance(Type.GetType(commandSD.AssemblyQualifiedName)) as TCommand;
                 instance.Load(commandSD, this);
+                _commands.Add(instance);
                 Debug.Log($"[CommandsRunner] Loaded command: {commandSD.AssemblyQualifiedName}, UID={commandSD.UID}");
             }
             catch (Exception e)
@@ -47,19 +51,25 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
 
         }
     }
-    public virtual void RefreshReferences(CommandsRunnerSD<TEntity, TCommand> sd)
+    public override void RefreshReferences(EntityComponentSD sd)
     {
-        Debug.Log($"[CommandsRunner] RefreshReferences for {sd.Commands.Count} commands");
-        foreach (var commandSD in sd.Commands)
+        base.RefreshReferences(sd);
+        CommandsRunnerSD<TEntity, TCommand> selfSD = sd as CommandsRunnerSD<TEntity, TCommand>;
+
+        Debug.Log($"[CommandsRunner] RefreshReferences for {selfSD.Commands.Count} commands");
+        foreach (var commandSD in selfSD.Commands)
         {
             var instace = _commands.FirstOrDefault(com => com.UID == commandSD.UID);
             instace?.RefreshReferences(commandSD);
         }
     }
-    public virtual void PostRefreshReferences(CommandsRunnerSD<TEntity, TCommand> sd)
+    public override void PostRefreshReferences(EntityComponentSD sd)
     {
-        Debug.Log($"[CommandsRunner] PostRefreshReferences for {sd.Commands.Count} commands");
-        foreach (var commandSD in sd.Commands)
+        base.PostRefreshReferences(sd);
+        CommandsRunnerSD<TEntity, TCommand> selfSD = sd as CommandsRunnerSD<TEntity, TCommand>;
+
+        Debug.Log($"[CommandsRunner] PostRefreshReferences for {selfSD.Commands.Count} commands");
+        foreach (var commandSD in selfSD.Commands)
         {
             var instace = _commands.FirstOrDefault(com => com.UID == commandSD.UID);
             instace?.PostRefreshReferences(commandSD);
@@ -114,14 +124,18 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
 
             CurrentCommand.UpdateTick();
         }
+        else
+            Debug.Log($"Current Command is Null ({_commands.Count()})");
 
     }
     public override void FixedTick()
     {
+
         if (_commands.Any() && CurrentCommand != null)
         {
             CurrentCommand?.FixedTick();
         }
+
     }
     public override void LateTick()
     {
@@ -129,6 +143,7 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
         {
             CurrentCommand?.LateTick();
         }
+
     }
 
     public virtual void Clear()
@@ -141,18 +156,20 @@ public abstract class CommandsRunner<TEntity, TCommand> : EntityComponent where 
 }
 
 [System.Serializable]
-public sealed class CommandsRunnerSD<TEntity, TCommand> : EntityComponent where TEntity : Entity where TCommand : Command<TEntity>
+public sealed class CommandsRunnerSD<TEntity, TCommand> : EntityComponentSD where TEntity : Entity where TCommand : Command<TEntity>
 {
     public int Mov;
     public List<CommandSD<TEntity>> Commands;
 
-    public CommandsRunnerSD(CommandsRunner<TEntity, TCommand> commandsRunner)
+    public CommandsRunnerSD() : base() { }
+    public CommandsRunnerSD(CommandsRunner<TEntity, TCommand> commandsRunner) : base(commandsRunner)
     {
         Mov = commandsRunner.Mov.ReadOnlyValue;
         Commands = new();
 
         foreach (var command in commandsRunner.Commands)
             Commands.Add(command.SD);
+        Debug.Log($"Created NEW CommandsRunnerSD : mov:{Mov} commands:{Commands.Count}");
     }
 }
 

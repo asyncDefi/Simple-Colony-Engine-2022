@@ -39,7 +39,6 @@ namespace ColonistCommands
             base.UpdateTick();
 
             float distance = Vector3.Distance(this.EntityRef.RealPosition, Cords);
-            Debug.Log($"Distance : {distance}/{_agent.stoppingDistance}");
             if (distance <= _agent.stoppingDistance)
                 Complete();
 

@@ -13,6 +13,7 @@ public abstract class ColonistCommand : Command<Colonist>
     public override CommandSD<Colonist> SD => CCSD;
 }
 
+[System.Serializable]
 public abstract class ColonistCommandSD : CommandSD<Colonist>
 {
     protected ColonistCommandSD(Command<Colonist> command) : base(command)
