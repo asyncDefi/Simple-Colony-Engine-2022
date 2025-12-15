@@ -194,3 +194,10 @@ MonoBehaviour:
     Damage: 1
     Value:
       _value: 100
+  - Key: Happiness
+    Init: 100
+    Max: 100
+    BaseGoneRate: 1
+    Damage: 1
+    Value:
+      _value: 100

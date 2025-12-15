@@ -1002,10 +1002,6 @@ PrefabInstance:
       propertyPath: <UID>k__BackingField
       value: none
       objectReference: {fileID: 0}
-    - target: {fileID: 1379442012383168563, guid: 5096c5d0a6a303f4da92f9e6bc1023de, type: 3}
-      propertyPath: _needs.Array.data[0].Value._value
-      value: 50
-      objectReference: {fileID: 0}
     - target: {fileID: 5342881655990661026, guid: 5096c5d0a6a303f4da92f9e6bc1023de, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.883
