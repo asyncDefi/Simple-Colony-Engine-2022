@@ -68,6 +68,7 @@ public sealed class Game : SingletonMonoBehaviour<Game>
 
         Map.Singleton.PostRefreshReferences(sd.MapSD);
 
+        _state.Value = GameState.Running;
         Debug.Log("Game loaded successfully via Coroutine.");
     }
     public void Clear()

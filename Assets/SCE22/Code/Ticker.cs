@@ -5,6 +5,8 @@ using UnityEngine;
 public sealed class Ticker : SingletonMonoBehaviour<Ticker>
 {
     [SerializeField] private List<TicksHandler> _handlers;
+    [SerializeField] private TicksHandler[] _stableHandlers;
+
     public IReadOnlyList<TicksHandler> Handlers => _handlers;
 
     public void PushIn(TicksHandler handler)
@@ -30,6 +32,9 @@ public sealed class Ticker : SingletonMonoBehaviour<Ticker>
 
         foreach (var handler in _handlers)
             handler?.UpdateTick();
+
+        foreach (var handler in _stableHandlers)
+            handler?.UpdateTick();
     }
     private void FixedUpdate()
     {
@@ -37,12 +42,16 @@ public sealed class Ticker : SingletonMonoBehaviour<Ticker>
 
         foreach (var handler in _handlers)
             handler?.FixedTick();
+        foreach (var handler in _stableHandlers)
+            handler?.FixedTick();
     }
     private void LateUpdate()
     {
         if (Game.Singleton.State.ReadOnlyValue != GameState.Running) return;
 
         foreach (var handler in _handlers)
+            handler?.LateTick();
+        foreach (var handler in _stableHandlers)
             handler?.LateTick();
     }
 }

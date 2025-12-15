@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7627726396046844346}
   - component: {fileID: 350272398451408027}
   - component: {fileID: 5530399998578341539}
+  - component: {fileID: 1379442012383168563}
   m_Layer: 0
   m_Name: Colonist
   m_TagString: Untagged
@@ -121,7 +122,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 100
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 2
@@ -151,6 +152,7 @@ MonoBehaviour:
   _components:
     m_list:
     - {fileID: 5530399998578341539}
+    - {fileID: 1379442012383168563}
   _baseSpeed: 10
 --- !u!114 &5530399998578341539
 MonoBehaviour:
@@ -169,3 +171,26 @@ MonoBehaviour:
   <AddedAtRuntimeFlag>k__BackingField: 0
   _mov:
     _value: -1
+--- !u!114 &1379442012383168563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8535334771679035314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8744e4db69402b4a81a88af668bcd4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <UID>k__BackingField: none
+  <LocalUID>k__BackingField: needs
+  <AddedAtRuntimeFlag>k__BackingField: 0
+  _needs:
+  - Key: Hunger
+    Init: 100
+    Max: 100
+    BaseGoneRate: 1
+    Damage: 1
+    Value:
+      _value: 100
