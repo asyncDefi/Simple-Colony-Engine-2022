@@ -76,31 +76,4 @@ namespace SType
             return new Color(unityColor.r, unityColor.g, unityColor.b, unityColor.a);
         }
     }
-
-    [System.Serializable]
-    public class SEntity
-    {
-        public string PrefabUID;
-        public string UID;
-
-        public SEntity()
-        {
-            PrefabUID = "null";
-            UID = "null";
-        }
-        public SEntity(Entity entity)
-        {
-            PrefabUID = entity.Prefab.UID;
-            UID = entity.UID;
-        }
-
-        public static implicit operator Entity(SEntity sEntity)
-        {
-            return Map.Singleton.Find<Entity>(sEntity.UID, sEntity.PrefabUID);
-        }
-        public static implicit operator SEntity(Entity entity)
-        {
-            return new(entity);
-        }
-    }
 }
