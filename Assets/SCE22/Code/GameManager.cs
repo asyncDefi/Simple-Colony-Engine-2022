@@ -28,15 +28,23 @@ public sealed class GameManager : SingletonMonoBehaviour<GameManager>
     {
         _state.Value = GameState.Loading;
 
-        Map.Singleton.Clear();
+        Clear();
 
         yield return null;
+
+        Ticker.Singleton.SetMultiplier(1);
 
         Map.Singleton.Load(save.Entities);
         Map.Singleton.RefreshReferences(save.Entities);
         Map.Singleton.PostRefreshReferences(save.Entities);
 
         _state.Value = GameState.GamePlay;
+    }
+
+    private void Clear()
+    {
+        Map.Singleton.Clear();
+        UIRoot.Singleton.Clear();
     }
 }
 
