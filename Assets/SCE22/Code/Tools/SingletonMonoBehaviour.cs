@@ -17,7 +17,7 @@ public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBe
 
     private void OnValidate()
     {
-        if (this.gameObject.name != typeof(T).Name && _rewriteGameObjectNameWithSingletonTypeName)
+        if (_rewriteGameObjectNameWithSingletonTypeName && this.gameObject.name != typeof(T).Name)
             this.gameObject.name = typeof(T).Name;
     }
 }

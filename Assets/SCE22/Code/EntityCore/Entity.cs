@@ -161,6 +161,11 @@ public abstract class Entity : MonoBehaviour
         }
     }
 
+    protected virtual void OnDestroy()
+    {
+        Map.Singleton?.OnEntityDestoyHandler(this);
+    }
+
     protected virtual void OnValidate()
     {
         var comps = GetComponents<EntityComponent>().ToList();
