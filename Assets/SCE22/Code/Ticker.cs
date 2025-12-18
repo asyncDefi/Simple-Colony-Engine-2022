@@ -6,10 +6,12 @@ using UnityEngine;
 
 public sealed class Ticker : SingletonMonoBehaviour<Ticker>
 {
+    public const float DefaultMultiplier = 1;
+
     [field: SerializeField] public float MinMultiplier = 0f;
     [field: SerializeField] public float MaxMultiplier = 10f;
 
-    [SerializeField, Space(5)] private ReactiveVar<float> _multiplier;
+    [SerializeField, Space(5)] private ReactiveVar<float> _multiplier = new(DefaultMultiplier);
     public IReadOnlyReactiveVar<float> Multiplier => _multiplier;
 
     private void Update()
@@ -34,9 +36,9 @@ public sealed class Ticker : SingletonMonoBehaviour<Ticker>
             entity?.LateTick();
     }
 
-    public void SetMultiplier(float go)
+    public void SetMultiplier(float multiplier)
     {
-        go = Mathf.Clamp(go, MinMultiplier, MaxMultiplier);
-        _multiplier.Value = go;
+        multiplier = Mathf.Clamp(multiplier, MinMultiplier, MaxMultiplier);
+        _multiplier.Value = multiplier;
     }
 }

@@ -40,6 +40,11 @@ public sealed class Map : SingletonMonoBehaviour<Map>
         }
     }
 
+    private void OnEnable()
+    {
+        var dummyCall = EntitiesMap;
+    }
+
     public Entity SpawnEntity(EntityPrefab prefab, bool isFirstSpawn = true, bool addToEntities = true)
     {
         if (prefab == null) return null;
