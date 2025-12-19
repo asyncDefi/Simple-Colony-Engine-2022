@@ -11,7 +11,6 @@ public sealed class GameManager : SingletonMonoBehaviour<GameManager>
     [SerializeField, Space(5)] private ReactiveVar<GameState> _state = new(GameState.GamePlay);
     public IReadOnlyReactiveVar<GameState> State => _state;
 
-
     public void Save(string saveName = null)
     {
         saveName ??= GameSaveName;
