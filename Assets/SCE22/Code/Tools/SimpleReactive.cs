@@ -120,6 +120,11 @@ namespace SimpleReactive
             GC.SuppressFinalize(this);
         }
 
+        public void SetSilient(T @new)
+        {
+            _value = @new;
+        }
+
         public override string ToString() => _value?.ToString() ?? "null";
     }
 

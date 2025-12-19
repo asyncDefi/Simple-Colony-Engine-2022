@@ -17,21 +17,18 @@ public abstract class Entity : MonoBehaviour
     [SerializeField, Space(5)] private ReactiveVar<bool> _isActive = new(true);
     public IReadOnlyReactiveVar<bool> IsActive => _isActive;
 
+    [SerializeField, Space(5)] private ReactiveVar<int> _hp;
+    public IReadOnlyReactiveVar<int> HP => _hp;
+
     [SerializeField, Space(5)] private ReactiveList<EntityComponent> _components = new();
     public IReadOnlyReactiveList<EntityComponent> Components => _components;
 
     [SerializeField] private List<string> _removedComponents;
     public IReadOnlyList<string> RemovedComponents => _removedComponents;
 
+    public event Action<Damage> OnTakeDamage;
+
     public virtual string Label => Prefab.UID;
-    public virtual int Quantity
-    {
-        get => 1;
-        set
-        {
-            Debug.LogWarning($"Attempted to modify {nameof(Quantity)} in {UID}, but it is fixed (read-only).", this);
-        }
-    }
 
     public virtual Vector3 GetRealPosition() => transform.position;
     public virtual void SetRealPosition(Vector3 cords) => transform.position = cords;
@@ -100,6 +97,21 @@ public abstract class Entity : MonoBehaviour
         component.OnRemove();
     }
 
+    public virtual void TakeDamage(Damage damage)
+    {
+        if (damage == null) return;
+
+        _hp.Value = Mathf.Clamp(HP.ReadOnlyValue - damage.Value, 0, int.MaxValue);
+        OnTakeDamage?.Invoke(damage);
+
+        if (HP.ReadOnlyValue <= 0)
+            OnTakeCritDamage(damage);
+    }
+    protected virtual void OnTakeCritDamage(Damage damage)
+    {
+        Destroy(this.gameObject);
+    }
+
     public virtual EntitySD GetEntitySD() => new(this);
 
     public virtual void Load(EntitySD sd)
@@ -113,6 +125,8 @@ public abstract class Entity : MonoBehaviour
             EnableEntity();
         else
             DisableEntity();
+
+        _hp.SetSilient(sd.HP);
 
         foreach (var componentSD in sd.Components)
         {
@@ -173,5 +187,24 @@ public abstract class Entity : MonoBehaviour
 
         if (comps.Any())
             comps.ForEach(comp => _components.Add(comp));
+    }
+}
+
+[System.Serializable]
+public sealed record EntityRecord
+{
+    public string UID;
+    public string PrefabUID;
+
+    public bool TryGetEntity(out Entity entity)
+    {
+        entity = Map.Singleton.Find(UID, PrefabUID);
+        return entity != null;
+    }
+
+    public EntityRecord(Entity entity)
+    {
+        UID = entity.UID;
+        PrefabUID = entity.Prefab.UID;
     }
 }

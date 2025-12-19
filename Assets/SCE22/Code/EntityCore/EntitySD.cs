@@ -14,6 +14,8 @@ public class EntitySD
 
     public bool IsActive;
 
+    public int HP;
+
     public List<EntityComponentSD> Components = new();
     public List<string> RemovedComponents = new();
 
@@ -26,6 +28,8 @@ public class EntitySD
         Rotation = entity.GetRealRotation();
 
         IsActive = entity.IsActive.ReadOnlyValue;
+
+        HP = entity.HP.ReadOnlyValue;
 
         foreach (var component in entity.Components.ReadonlyList)
             Components.Add(component.GetComponentSD());

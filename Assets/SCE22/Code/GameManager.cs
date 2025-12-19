@@ -46,6 +46,13 @@ public sealed class GameManager : SingletonMonoBehaviour<GameManager>
         Map.Singleton.Clear();
         UIRoot.Singleton.Clear();
     }
+
+#if UNITY_EDITOR
+    [Button]
+    private void EDITOR_SAVE() => Save();
+    [Button]
+    private void EDITOR_LOAD() => Load();
+#endif
 }
 
 public enum GameState : byte
