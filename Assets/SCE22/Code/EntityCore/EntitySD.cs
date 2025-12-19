@@ -14,7 +14,7 @@ public class EntitySD
 
     public bool IsActive;
 
-    public int HP;
+    public float HP;
 
     public List<EntityComponentSD> Components = new();
     public List<string> RemovedComponents = new();

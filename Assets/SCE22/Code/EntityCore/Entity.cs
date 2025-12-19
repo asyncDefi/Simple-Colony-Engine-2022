@@ -17,8 +17,8 @@ public abstract class Entity : MonoBehaviour
     [SerializeField, Space(5)] private ReactiveVar<bool> _isActive = new(true);
     public IReadOnlyReactiveVar<bool> IsActive => _isActive;
 
-    [SerializeField, Space(5)] private ReactiveVar<int> _hp;
-    public IReadOnlyReactiveVar<int> HP => _hp;
+    [SerializeField, Space(5)] private ReactiveVar<float> _hp;
+    public IReadOnlyReactiveVar<float> HP => _hp;
 
     [SerializeField, Space(5)] private ReactiveList<EntityComponent> _components = new();
     public IReadOnlyReactiveList<EntityComponent> Components => _components;
@@ -101,7 +101,7 @@ public abstract class Entity : MonoBehaviour
     {
         if (damage == null) return;
 
-        _hp.Value = Mathf.Clamp(HP.ReadOnlyValue - damage.Value, 0, int.MaxValue);
+        _hp.Value = Mathf.Clamp(HP.ReadOnlyValue - damage.Value, 0, float.MaxValue);
         OnTakeDamage?.Invoke(damage);
 
         if (HP.ReadOnlyValue <= 0)
