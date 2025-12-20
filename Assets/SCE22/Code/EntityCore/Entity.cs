@@ -26,6 +26,9 @@ public abstract class Entity : MonoBehaviour
     [SerializeField] private List<string> _removedComponents;
     public IReadOnlyList<string> RemovedComponents => _removedComponents;
 
+    [SerializeField] private ReactiveVar<Entity> _reservedBy;
+    public IReadOnlyReactiveVar<Entity> ReservedBy => _reservedBy;
+
     public event Action<Damage> OnTakeDamage;
 
     public virtual string Label => Prefab.UID;
@@ -112,6 +115,17 @@ public abstract class Entity : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    public virtual void SetReservation(Entity by)
+    {
+        if (by == null) return;
+        _reservedBy.Value = by;
+    }
+    public virtual void ClearReservation()
+    {
+        if (_reservedBy.Value == null) return;
+        _reservedBy.Value = null;
+    }
+
     public virtual EntitySD GetEntitySD() => new(this);
 
     public virtual void Load(EntitySD sd)
@@ -160,6 +174,9 @@ public abstract class Entity : MonoBehaviour
     }
     public virtual void RefreshReferences(EntitySD sd)
     {
+        if (sd.ReservedBy != null && sd.ReservedBy.TryGetEntity(out Entity by))
+            _reservedBy.SetSilient(by);
+
         foreach (var componentSD in sd.Components)
         {
             var instance = _components.List.FirstOrDefault(component => component.UID == componentSD.UID);

@@ -14,6 +14,8 @@ public class EntitySD
 
     public bool IsActive;
 
+    public EntityRecord ReservedBy;
+
     public float HP;
 
     public List<EntityComponentSD> Components = new();
@@ -28,6 +30,9 @@ public class EntitySD
         Rotation = entity.GetRealRotation();
 
         IsActive = entity.IsActive.ReadOnlyValue;
+
+        if (entity.ReservedBy.ReadOnlyValue != null)
+            ReservedBy = new(entity.ReservedBy.ReadOnlyValue);
 
         HP = entity.HP.ReadOnlyValue;
 
