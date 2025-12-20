@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using SimpleReactive;
 using TMPro;
@@ -96,6 +97,13 @@ public class Item : Entity
 
     [SerializeField] private ReactiveVar<int> _quantity = new(1);
     public IReadOnlyReactiveVar<int> Quantity => _quantity;
+
+    public override Vector3 GetRealPosition()
+    {
+        return (_owner.Value == null)
+                ? base.GetRealPosition()
+                    : _owner.Value.Parent.GetRealPosition();
+    }
 
     public virtual bool TryIncrease(int value)
     {
