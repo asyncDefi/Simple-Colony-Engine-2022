@@ -50,7 +50,7 @@ public class Inventory : EntityComponent
         return true;
     }
 
-    public override EntityComponentSD GetComponentSD()
+    public override EntityComponentSD GetSD()
     {
         return new InventorySD(this);
     }

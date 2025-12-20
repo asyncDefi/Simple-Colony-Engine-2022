@@ -34,7 +34,7 @@ public class NeedsHandler : EntityComponent
             need.Disable();
     }
 
-    public override EntityComponentSD GetComponentSD()
+    public override EntityComponentSD GetSD()
     {
         return new NeedsHandlerSD(this);
     }
@@ -50,7 +50,7 @@ public class NeedsHandler : EntityComponent
         foreach (var needSD in needsHandlerSD.Needs)
         {
             var need = _needs.FirstOrDefault(i => i.UID == needSD.Key);
-            need?.Increase(needSD.Value);
+            need?.Set(needSD.Value);
         }
     }
     public override void PostRefreshReferences(EntityComponentSD sd)

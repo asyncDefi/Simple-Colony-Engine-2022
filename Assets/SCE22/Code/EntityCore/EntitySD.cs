@@ -32,7 +32,7 @@ public class EntitySD
         HP = entity.HP.ReadOnlyValue;
 
         foreach (var component in entity.Components.ReadonlyList)
-            Components.Add(component.GetComponentSD());
+            Components.Add(component.GetSD());
 
         RemovedComponents = entity.RemovedComponents.ToList();
     }

@@ -137,7 +137,7 @@ namespace SimpleReactive
         public Action<T> OnAdd;
         public Action<T> OnRemove;
 
-        public ReactiveList() { }
+        public ReactiveList() { m_list = new(); }
         public ReactiveList(T single)
         {
             m_list.Add(single);

@@ -46,7 +46,7 @@ public abstract class EntityComponent : MonoBehaviour
     public virtual void FixedTick() { return; }
     public virtual void LateTick() { return; }
 
-    public virtual EntityComponentSD GetComponentSD() => new(this);
+    public virtual EntityComponentSD GetSD() => new(this);
 
     public virtual void Load(EntityComponentSD sd)
     {

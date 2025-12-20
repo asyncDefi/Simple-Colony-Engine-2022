@@ -735,9 +735,6 @@ MonoBehaviour:
   <GameSaveName>k__BackingField: dev_test
   _state:
     _value: 0
-  Test:
-    _goal: 100
-    _value: 100
 --- !u!4 &1034586863
 Transform:
   m_ObjectHideFlags: 0
