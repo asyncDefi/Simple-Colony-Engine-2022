@@ -11,6 +11,7 @@ public class EntityPrefab : ScriptableObject
             return this.name;
         }
     }
-
     [field: SerializeField] public Entity Value { get; private set; }
+
+    [field: SerializeField, Space(5)] public Sprite NativeIcon { get; private set; }
 }

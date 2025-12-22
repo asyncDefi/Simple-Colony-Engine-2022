@@ -9,86 +9,6 @@ using UnityEngine;
 
 public class Item : Entity
 {
-    public static int AmountOf(ItemPrefab prefab)
-    {
-        var map = Map.Singleton;
-        if (map.EntitiesMap.ContainsKey(prefab) == false) return 0;
-        if (map.EntitiesMap[prefab].List.Count == 0) return 0;
-
-        int counter = 0;
-
-        foreach (var item in map.EntitiesMap[prefab].List)
-        {
-            var i = item as Item;
-            counter += i.Quantity.ReadOnlyValue;
-        }
-
-        return counter;
-    }
-    public static int AmountOf(ItemPrefab prefab, Predicate<Item> predicate)
-    {
-        var map = Map.Singleton;
-        if (map.EntitiesMap.ContainsKey(prefab) == false) return 0;
-        if (map.EntitiesMap[prefab].List.Count == 0) return 0;
-
-        int counter = 0;
-
-        foreach (var item in map.EntitiesMap[prefab].List)
-        {
-            var i = item as Item;
-
-            if (predicate.Invoke(i))
-                counter += i.Quantity.ReadOnlyValue;
-        }
-
-        return counter;
-    }
-
-    public static int AmountOfFreeFromReservation(ItemPrefab prefab)
-    {
-        Predicate<Item> predicate = (Item item) => item.ReservedBy.ReadOnlyValue == null;
-        return AmountOf(prefab, predicate);
-    }
-    public static IEnumerable<Item> GetItems(ItemPrefab prefab, Predicate<Item> predicate)
-    {
-        // Cache the singleton reference to avoid repeated access overhead
-        var map = Map.Singleton;
-
-        // Safety check: ensure map exists
-        if (map == null)
-        {
-            Debug.LogError("Map Singleton is null!");
-            yield break;
-        }
-
-        // Optimization: Use TryGetValue to avoid double lookup (ContainsKey + Indexer)
-        // This reduces hash calculation overhead from 2x to 1x.
-        if (!map.EntitiesMap.TryGetValue(prefab, out var container))
-        {
-            yield break; // Prefab key not found
-        }
-
-        // Safety check: ensure the list inside the container is valid
-        if (container.List == null || container.List.Count == 0)
-        {
-            yield break;
-        }
-
-        // Iterate through the source list
-        foreach (var entity in container.List)
-        {
-            // Optimization: "is" pattern matching handles the cast and null check efficiently
-            if (entity is Item item)
-            {
-                // Invoke predicate only if the cast was successful
-                // Added a null check for the predicate itself just in case
-                if (predicate != null && predicate(item))
-                {
-                    yield return item;
-                }
-            }
-        }
-    }
 
     public ItemPrefab ItemPrefab => Prefab as ItemPrefab;
 
@@ -135,7 +55,7 @@ public class Item : Entity
         EnableEntity();
     }
 
-    public override EntitySD GetEntitySD()
+    public override EntitySD GetSD()
     {
         return new ItemSD(this);
     }
@@ -168,6 +88,91 @@ public class Item : Entity
     public virtual bool IsEqualTo(Item other)
     {
         return other.Prefab.UID == this.Prefab.UID && other.HP.ReadOnlyValue == this.HP.ReadOnlyValue;
+    }
+
+
+    public static class Tools
+    {
+        public static int AmountOf(ItemPrefab prefab)
+        {
+            var map = Map.Singleton;
+            if (map.EntitiesMap.ContainsKey(prefab) == false) return 0;
+            if (map.EntitiesMap[prefab].List.Count == 0) return 0;
+
+            int counter = 0;
+
+            foreach (var item in map.EntitiesMap[prefab].List)
+            {
+                var i = item as Item;
+                counter += i.Quantity.ReadOnlyValue;
+            }
+
+            return counter;
+        }
+        public static int AmountOf(ItemPrefab prefab, Predicate<Item> predicate)
+        {
+            var map = Map.Singleton;
+            if (map.EntitiesMap.ContainsKey(prefab) == false) return 0;
+            if (map.EntitiesMap[prefab].List.Count == 0) return 0;
+
+            int counter = 0;
+
+            foreach (var item in map.EntitiesMap[prefab].List)
+            {
+                var i = item as Item;
+
+                if (predicate.Invoke(i))
+                    counter += i.Quantity.ReadOnlyValue;
+            }
+
+            return counter;
+        }
+
+        public static int AmountOfFreeFromReservation(ItemPrefab prefab)
+        {
+            Predicate<Item> predicate = (Item item) => item.ReservedBy.ReadOnlyValue == null;
+            return AmountOf(prefab, predicate);
+        }
+        public static IEnumerable<Item> GetItems(ItemPrefab prefab, Predicate<Item> predicate)
+        {
+            // Cache the singleton reference to avoid repeated access overhead
+            var map = Map.Singleton;
+
+            // Safety check: ensure map exists
+            if (map == null)
+            {
+                Debug.LogError("Map Singleton is null!");
+                yield break;
+            }
+
+            // Optimization: Use TryGetValue to avoid double lookup (ContainsKey + Indexer)
+            // This reduces hash calculation overhead from 2x to 1x.
+            if (!map.EntitiesMap.TryGetValue(prefab, out var container))
+            {
+                yield break; // Prefab key not found
+            }
+
+            // Safety check: ensure the list inside the container is valid
+            if (container.List == null || container.List.Count == 0)
+            {
+                yield break;
+            }
+
+            // Iterate through the source list
+            foreach (var entity in container.List)
+            {
+                // Optimization: "is" pattern matching handles the cast and null check efficiently
+                if (entity is Item item)
+                {
+                    // Invoke predicate only if the cast was successful
+                    // Added a null check for the predicate itself just in case
+                    if (predicate != null && predicate(item))
+                    {
+                        yield return item;
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -21,6 +21,6 @@ public sealed class GameSave
         CreatedDateUTC = DateTime.UtcNow;
 
         foreach (var entity in Map.Singleton.Entities.ReadonlyList)
-            Entities.Add(entity.GetEntitySD());
+            Entities.Add(entity.GetSD());
     }
 }

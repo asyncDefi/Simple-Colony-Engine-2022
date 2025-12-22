@@ -11,6 +11,17 @@ public class Inventory : EntityComponent
     [SerializeField, Space(5)] private ReactiveList<Item> _items;
     public IReadOnlyReactiveList<Item> Items => _items;
 
+    public int AmountOf(ItemPrefab prefab)
+    {
+        int counter = 0;
+
+        foreach (var item in _items.List)
+            if (item.Prefab == prefab)
+                counter += item.Quantity.ReadOnlyValue;
+
+        return counter;
+    }
+
     public bool CanAdd(Item item)
     {
         if (item == null) return false;

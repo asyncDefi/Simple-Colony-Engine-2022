@@ -83,6 +83,7 @@ public class Progress
     }
 }
 
+
 #if UNITY_EDITOR
 [CustomPropertyDrawer(typeof(Progress))]
 public class ProgressDrawer : PropertyDrawer

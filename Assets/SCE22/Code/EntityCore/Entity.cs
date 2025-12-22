@@ -126,7 +126,7 @@ public abstract class Entity : MonoBehaviour
         _reservedBy.Value = null;
     }
 
-    public virtual EntitySD GetEntitySD() => new(this);
+    public virtual EntitySD GetSD() => new(this);
 
     public virtual void Load(EntitySD sd)
     {
