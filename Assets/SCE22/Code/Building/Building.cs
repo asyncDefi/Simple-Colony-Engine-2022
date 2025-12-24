@@ -26,7 +26,7 @@ public class Building : Entity
         _state.Value = BuildingState.UnderConstruction;
     }
 
-    public virtual void Work(float value)
+    public virtual void AddConstruction(float value)
     {
         if (_state.Value != BuildingState.UnderConstruction) return;
 

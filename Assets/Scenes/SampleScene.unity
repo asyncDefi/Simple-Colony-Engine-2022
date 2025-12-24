@@ -167,7 +167,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rewriteGameObjectNameWithSingletonTypeName: 1
-  _previewObj: {fileID: 0}
+  _previewObj: {fileID: 1401170630}
+  _building: {fileID: 0}
+  _prefab: {fileID: 0}
   _yOffset: 0.5
   _obstacleLayers:
     serializedVersion: 2

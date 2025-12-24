@@ -6,10 +6,12 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "SCE22/Recipe/New")]
 public class Recipe : ScriptableObject
 {
-
     public virtual string UID { get { return this.name; } }
 
     [field: SerializeField] public RecipeCell[] Cells { get; private set; }
+    [field: SerializeField] public float WorkCost { get; private set; }
+
+    [field: SerializeField, Space(5)] public RecipeCell Out { get; private set; }
 
     public static class Tools
     {

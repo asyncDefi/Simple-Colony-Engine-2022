@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using SimpleReactive;
@@ -7,6 +8,27 @@ public class Inventory : EntityComponent
 {
     [SerializeField] private string _localUID = "inventory";
     public override string LocalUID => _localUID;
+
+    public virtual int InventoryHash
+    {
+        get
+        {
+            var hash = new HashCode();
+            hash.Add(UID);
+
+            foreach (var item in _items.List)
+            {
+                if (item != null)
+                {
+                    hash.Add(item.Prefab);
+
+                    hash.Add(item.Quantity.ReadOnlyValue);
+                }
+            }
+
+            return hash.ToHashCode();
+        }
+    }
 
     [SerializeField, Space(5)] private ReactiveList<Item> _items;
     public IReadOnlyReactiveList<Item> Items => _items;
@@ -75,5 +97,7 @@ public class Inventory : EntityComponent
             if (entityRecord.TryGetEntity(out Entity entity))
                 _items.Add(entity as Item);
         }
+
+        Debug.Log($"Inventory[{UID}] loaded with Hash : {this.InventoryHash}");
     }
 }
