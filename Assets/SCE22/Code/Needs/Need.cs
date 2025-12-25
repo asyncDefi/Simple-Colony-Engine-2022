@@ -25,7 +25,6 @@ public class Need : IDamageAuthor
     [SerializeField, Min(MIN_NEED_VALUE)] private float _decayRate = 0.5f;
     public virtual float DecayRate => _decayRate;
 
-
     [SerializeField, Min(0f)] private float _damageOnEmpty = 0.5f;
     public virtual float DamageOnEmpty => _damageOnEmpty;
 

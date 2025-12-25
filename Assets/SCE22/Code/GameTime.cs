@@ -11,12 +11,12 @@ public sealed class GameTime : SingletonMonoBehaviour<GameTime>
 
     [field: SerializeField] public int MinutesInHour { get; private set; } = 60;
     [field: SerializeField] public int HoursInDay { get; private set; } = 24;
-    [field: SerializeField] public int DaysInMonth { get; private set; } = 30; // Changed to standard 30 for consistency
+    [field: SerializeField] public int DaysInMonth { get; private set; } = 30;
     [field: SerializeField] public int MonthsInYear { get; private set; } = 12;
 
     [Header("Current Time")]
     [SerializeField] private ReactiveVar<int> _minute = new(0);
-    [SerializeField] private ReactiveVar<int> _hour = new(6); // Start at 6:00 AM usually
+    [SerializeField] private ReactiveVar<int> _hour = new(6);
     [SerializeField] private ReactiveVar<int> _day = new(1);
     [SerializeField] private ReactiveVar<int> _month = new(1);
     [SerializeField] private ReactiveVar<int> _year = new(2020);

@@ -10,14 +10,15 @@ public class WorkPlace : Building
     public WorkPlacePrefab WorkPlacePrefab => Prefab as WorkPlacePrefab;
 
     [field: SerializeField] public Task RuntimeTask { get; private set; }
+    [field: SerializeField] public Transform DropSpot { get; private set; }
 
     public bool IsBusy => RuntimeTask != null;
 
-    public bool IsEnoughForWork()
+    public bool IsEnoughForWorkOnSingleUnit()
     {
-        return IsEnoughForWork(out _);
+        return IsEnoughForWorkOnSingleUnit(out _);
     }
-    public bool IsEnoughForWork(out Dictionary<ItemPrefab, int> deficit)
+    public bool IsEnoughForWorkOnSingleUnit(out Dictionary<ItemPrefab, int> deficit)
     {
         deficit = null;
 
@@ -42,7 +43,7 @@ public class WorkPlace : Building
     }
 
 
-    public virtual void MakeTask(Recipe recipe, int repeats)
+    public virtual void StartTask(Recipe recipe, int repeats)
     {
         if (IsBusy)
             CancelTask();
@@ -66,7 +67,7 @@ public class WorkPlace : Building
 
     public virtual void WorkUnitTick(float value)
     {
-        if (!IsBusy || !IsEnoughForWork()) return;
+        if (!IsBusy || !IsEnoughForWorkOnSingleUnit()) return;
 
         RuntimeTask.UnitProgress.Add(value);
         if (RuntimeTask.UnitProgress.IsComplete)
@@ -83,7 +84,19 @@ public class WorkPlace : Building
     {
         foreach (var cell in RuntimeTask.Recipe.Cells)
         {
+            int remind = cell.Quantity;
 
+            for (int i = 0; i < 1000; i++)
+            {
+                var unit = Map.Singleton.SpawnEntity(cell.ItemPrefab) as Item;
+                int Quantity = (remind > cell.ItemPrefab.MaxQuantity) ? cell.ItemPrefab.MaxQuantity : remind;
+
+                unit.TryIncrease(Quantity - 1);
+
+                remind -= Quantity;
+                if (remind <= 0)
+                    break;
+            }
         }
     }
 

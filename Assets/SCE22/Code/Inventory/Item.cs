@@ -9,7 +9,6 @@ using UnityEngine;
 
 public class Item : Entity
 {
-
     public ItemPrefab ItemPrefab => Prefab as ItemPrefab;
 
     [SerializeField] private ReactiveVar<Inventory> _owner;

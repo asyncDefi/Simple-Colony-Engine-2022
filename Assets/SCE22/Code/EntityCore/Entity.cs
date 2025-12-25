@@ -12,7 +12,7 @@ public abstract class Entity : MonoBehaviour
     [field: SerializeField] public EntityPrefab Prefab { get; private set; }
     [field: SerializeField] public string UID { get; private set; } = "none";
 
-    [SerializeField, Space(5)] private GameObject _viewRoot;
+    [SerializeField, Space(5)] protected GameObject _viewRoot;
 
     [SerializeField, Space(5)] private ReactiveVar<bool> _isActive = new(true);
     public IReadOnlyReactiveVar<bool> IsActive => _isActive;

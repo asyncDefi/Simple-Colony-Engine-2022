@@ -68,6 +68,10 @@ public sealed class Map : SingletonMonoBehaviour<Map>
 
         return instance;
     }
+    public T SpawnEntity<T>(EntityPrefab prefab, bool isFirstSpawn = true, bool addToEntities = true) where T : Entity
+    {
+        return SpawnEntity(prefab, isFirstSpawn, addToEntities) as T;
+    }
     public Entity Find(string uid, string prefabUID = null)
     {
         if (prefabUID == null)
